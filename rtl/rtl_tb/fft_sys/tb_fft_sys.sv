@@ -428,4 +428,117 @@ module tb_fft_sys;
     end
 
 
+
+    // 趟3前 RAM IN 三bank快照（genvar 常量路径）
+    integer snap_done;
+    initial snap_done = 0;
+    always @(posedge clk) if (ev_p2ri == 2 && !snap_done) snap_done <= 1;
+    genvar gb, gl;
+    generate
+        for (gb = 0; gb < 3; gb = gb + 1) begin : SNAPB
+            for (gl = 0; gl < 8; gl = gl + 1) begin : SNAPL
+                initial begin
+                    wait (snap_done);
+                    repeat (20) @(posedge clk);
+                    #1;
+                    begin : cntblk
+                        integer nz; integer a;
+                        nz = 0;
+                        for (a = 0; a < 64; a = a + 1)
+                            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[gb].ram_in_inst.RAMIN[gl].ram_i_0.RAM[a] !== 32'h0) nz = nz + 1;
+                        $display("SNAP bank=%0d lane=%0d 非零(前64)=%0d 首值=%h", gb, gl, nz,
+                            dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[gb].ram_in_inst.RAMIN[gl].ram_i_0.RAM[0]);
+                    end
+                end
+            end
+        end
+    endgenerate
+
+
+    // 趟2回写窗口: bank0 各 lane 实际写入数据非零统计
+    integer p2w; initial p2w = 0;
+    always @(posedge clk) begin
+        if (ev_p2ri == 1) p2w <= 1;
+        if (ev_p2ri == 2) p2w <= 0;
+    end
+    genvar wl;
+    generate
+        for (wl = 0; wl < 8; wl = wl + 1) begin : WRPROBE
+            integer wcnt_nz; integer wcnt_all;
+            initial begin wcnt_nz = 0; wcnt_all = 0; end
+            always @(posedge clk) if (p2w && dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_ena[0][wl]) begin
+                wcnt_all <= wcnt_all + 1;
+                if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_data[0][wl] !== 32'h0) wcnt_nz <= wcnt_nz + 1;
+            end
+            initial begin
+                wait (ev_p2ri == 2);
+                repeat (5) @(posedge clk);
+                $display("WR bank0 lane=%0d 写入%0d次 非零%0d", wl, wcnt_all, wcnt_nz);
+            end
+        end
+    endgenerate
+
+
+    // ALU 减法支路活性: fft_out1_r[0][*] vs fft_out2_r[0][*] 非零统计(全程)
+    integer o1nz, o1all, o2nz, o2all;
+    initial begin o1nz=0; o1all=0; o2nz=0; o2all=0; end
+    always @(posedge clk) begin
+        if (dut.u_ai_acce_core.fft_out_valid[0][0]) begin
+            o1all <= o1all + 1; o2all <= o2all + 1;
+            if (dut.u_ai_acce_core.fft_out1_r[0][0] !== 40'h0) o1nz <= o1nz + 1;
+            if (dut.u_ai_acce_core.fft_out2_r[0][0] !== 40'h0) o2nz <= o2nz + 1;
+        end
+    end
+    final begin
+        $display("ALUACT out1(减) 采样%0d 非零%0d | out2(加) 采样%0d 非零%0d", o1all, o1nz, o2all, o2nz);
+    end
+
+
+    // 分级活性: fft_out1/2_r[0][s] s=0..3 逐级非零统计
+    integer s1nz[3:0]; integer s2nz[3:0]; integer sall[3:0];
+    integer si; initial begin for (si=0;si<4;si=si+1) begin s1nz[si]=0; s2nz[si]=0; sall[si]=0; end end
+    genvar ps;
+    generate
+        for (ps = 0; ps < 4; ps = ps + 1) begin : STGPROBE
+            always @(posedge clk) if (dut.u_ai_acce_core.fft_out_valid[0][ps]) begin
+                sall[ps] <= sall[ps] + 1;
+                if (dut.u_ai_acce_core.fft_out1_r[0][ps] !== 40'h0) s1nz[ps] <= s1nz[ps] + 1;
+                if (dut.u_ai_acce_core.fft_out2_r[0][ps] !== 40'h0) s2nz[ps] <= s2nz[ps] + 1;
+            end
+        end
+    endgenerate
+    final begin
+        for (si=0;si<4;si=si+1)
+            $display("STAGE %0d: valid=%0d out1非零=%0d out2非零=%0d", si, sall[si], s1nz[si], s2nz[si]);
+    end
+
+
+    // mdc[0] 输出与第4级开关双路对比
+    integer sw0nz, sw1nz, do0nz, do1nz, swall;
+    initial begin sw0nz=0; sw1nz=0; do0nz=0; do1nz=0; swall=0; end
+    always @(posedge clk) begin
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_ena[3]) begin
+            swall <= swall + 1;
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_0[3][15:0] !== 16'h0) sw0nz <= sw0nz + 1;
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_1[3][15:0] !== 16'h0) sw1nz <= sw1nz + 1;
+        end
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.mdc_vaild) begin
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[0] !== 16'h0) do0nz <= do0nz + 1;
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[1] !== 16'h0) do1nz <= do1nz + 1;
+        end
+    end
+    final $display("MDCOUT switch_ena=%0d sw0非零=%0d sw1非零=%0d | mdc_vaild期 do0非零=%0d do1非零=%0d", swall, sw0nz, sw1nz, do0nz, do1nz);
+
+
+    // array_sort 写入拍数据检查: pe_o_vaild 时 array_sort_i 偶/奇非零率
+    integer asin_e, asin_o, asall;
+    initial begin asin_e=0; asin_o=0; asall=0; end
+    always @(posedge clk)
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.pe_o_vaild) begin
+            asall <= asall + 1;
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[2] !== 32'h0) asin_e <= asin_e + 1;
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[3] !== 32'h0) asin_o <= asin_o + 1;
+        end
+    final $display("ASIN pe_vaild=%0d 输入偶lane非零=%0d 奇lane非零=%0d", asall, asin_e, asin_o);
+
 endmodule
