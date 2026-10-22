@@ -643,107 +643,51 @@ module tb_fft_sys;
             $fclose(fpv); fpv = -1;
         end
     end
-    // fft_out1/2_r[ap][s] 四组活性(趟1窗口)
-    integer oz [0:15]; integer oi;
-    initial begin for (oi=0; oi<16; oi=oi+1) oz[oi]=0; end
+    // mdc[j] 输入(RAM读)活性: mdc_real_i[j][0/1] 趟1窗口
+    integer iz [0:7]; integer ii;
+    initial begin for (ii=0; ii<8; ii=ii+1) iz[ii]=0; end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[0][0]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[0][0] !== 40'h0) oz[0] <= oz[0] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[0][0] !== 16'h0)
+                iz[0] <= iz[0] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[0][1]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[0][1] !== 40'h0) oz[1] <= oz[1] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[0][1] !== 16'h0)
+                iz[1] <= iz[1] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[0][2]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[0][2] !== 40'h0) oz[2] <= oz[2] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[1][0] !== 16'h0)
+                iz[2] <= iz[2] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[0][3]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[0][3] !== 40'h0) oz[3] <= oz[3] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[1][1] !== 16'h0)
+                iz[3] <= iz[3] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[1][0]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[1][0] !== 40'h0) oz[4] <= oz[4] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[2][0] !== 16'h0)
+                iz[4] <= iz[4] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[1][1]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[1][1] !== 40'h0) oz[5] <= oz[5] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[2][1] !== 16'h0)
+                iz[5] <= iz[5] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[1][2]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[1][2] !== 40'h0) oz[6] <= oz[6] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[3][0] !== 16'h0)
+                iz[6] <= iz[6] + 1;
     end
     always @(posedge clk) begin
         if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[1][3]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[1][3] !== 40'h0) oz[7] <= oz[7] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[2][0]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[2][0] !== 40'h0) oz[8] <= oz[8] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[2][1]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[2][1] !== 40'h0) oz[9] <= oz[9] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[2][2]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[2][2] !== 40'h0) oz[10] <= oz[10] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[2][3]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[2][3] !== 40'h0) oz[11] <= oz[11] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[3][0]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[3][0] !== 40'h0) oz[12] <= oz[12] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[3][1]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[3][1] !== 40'h0) oz[13] <= oz[13] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[3][2]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[3][2] !== 40'h0) oz[14] <= oz[14] + 1;
-            end
-    end
-    always @(posedge clk) begin
-        if ($time > 3300 && $time < 4100)
-            if (dut.u_ai_acce_core.u_fft_core.fft_out_valid[3][3]) begin
-                if (dut.u_ai_acce_core.u_fft_core.fft_out1_r[3][3] !== 40'h0) oz[15] <= oz[15] + 1;
-            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.mdc_real_i[3][1] !== 16'h0)
+                iz[7] <= iz[7] + 1;
     end
     final begin
-        for (oi=0; oi<4; oi=oi+1)
-            $display("ALUZ 组%0d: 四级out1非零 = %0d %0d %0d %0d", oi, oz[oi*4], oz[oi*4+1], oz[oi*4+2], oz[oi*4+3]);
+        for (ii=0; ii<4; ii=ii+1)
+            $display("MDcin 实例%0d: 输入路0非零=%0d 路1非零=%0d", ii, iz[ii*2], iz[ii*2+1]);
     end
 endmodule
