@@ -289,7 +289,7 @@ module tb_fft_sys;
     // ---------------- 主流程 ----------------
     integer fi, fo, i, code;
     reg signed [15:0] sval;
-    reg [63:0] w0, w1;
+    reg [31:0] w0, w1;  // 32位: {im16,re16} 每字两个复样本
     reg [31:0] reg29_val;
     integer done_cnt;
     integer ar_cnt, rvalid_cnt;
@@ -690,4 +690,41 @@ module tb_fft_sys;
         for (ii=0; ii<4; ii=ii+1)
             $display("MDcin 实例%0d: 输入路0非零=%0d 路1非零=%0d", ii, iz[ii*2], iz[ii*2+1]);
     end
+    // bank0 dump(DMA输入摆放) at ev_p2ri==1+30拍(bank0尚未被趟2改写)
+    integer b0d; initial b0d = 0;
+    genvar bl0;
+    generate
+        for (bl0 = 0; bl0 < 8; bl0 = bl0 + 1) begin : B0DUMP
+            initial begin
+                wait (ev_p2ri == 1);
+                repeat (30) @(posedge clk);
+                #1;
+                if (b0d == 0) b0d = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/bank0dump.txt", "w");
+                $fwrite(b0d, "lane%0d %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h %h\n", bl0, dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[1], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[2], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[4], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[5], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[6], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[7], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[8], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[9], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[10], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[11], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[12], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[13], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[14], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[15], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[16], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[17], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[18], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[19], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[20], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[21], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[22], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[23], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[24], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[25], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[26], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[27], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[28], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[29], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[30], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[31], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[32], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[33], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[34], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[35], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[36], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[37], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[38], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[39], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[40], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[41], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[42], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[43], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[44], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[45], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[46], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[47], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[48], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[49], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[50], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[51], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[52], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[53], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[54], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[55], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[56], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[57], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[58], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[59], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[60], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[61], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[62], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.TRIPLE_RAM_IN[0].ram_in_inst.RAMIN[bl0].ram_i_0.RAM[63]);
+            end
+        end
+    endgenerate
+
+
+    final begin
+        $display("MEM0 mem[0]=%h mem[1]=%h mem[2]=%h mem[255]=%h",
+            u_axi_ram_imap.mem[0], u_axi_ram_imap.mem[1], u_axi_ram_imap.mem[2], u_axi_ram_imap.mem[255]);
+    end
+
+
+    // 高32位样本通路活性
+    integer rhi, rlo, f4, f0;
+    initial begin rhi=0; rlo=0; f4=0; f0=0; end
+    always @(posedge clk) begin
+        if (imap_m_axi_rvalid && imap_m_axi_rready) begin
+            if (imap_m_axi_rdata[63:32] !== 32'h0) rhi <= rhi + 1;
+            if (imap_m_axi_rdata[31:0]  !== 32'h0) rlo <= rlo + 1;
+        end
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_ena[0][0])
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_data[0][0] !== 32'h0) f0 <= f0 + 1;
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_ena[0][4])
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_data[0][4] !== 32'h0) f4 <= f4 + 1;
+    end
+    final $display("HI32 总线rdata高32非零=%0d 低32非零=%0d | bus_i_data lane0非零=%0d lane4非零=%0d", rhi, rlo, f0, f4);
+
 endmodule
