@@ -289,7 +289,8 @@ module tb_fft_sys;
     // ---------------- 主流程 ----------------
     integer fi, fo, i, code;
     reg signed [15:0] sval;
-    reg [31:0] w0, w1;  // 32位: {im16,re16} 每字两个复样本
+    reg [31:0] w0, w1;
+    reg [63:0] wout;  // 32位: {im16,re16} 每字两个复样本
     reg [31:0] reg29_val;
     integer done_cnt;
     integer ar_cnt, rvalid_cnt;
@@ -364,10 +365,10 @@ module tb_fft_sys;
         // ---- 回读输出: mem[4096..] 256 字 -> 512 样本 (re im) ----
         fo = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/out_512.txt", "w");
         for (i = 0; i < NPOINT/2*SIGN_LEN; i=i+1) begin
-            w0 = u_axi_ram_imap.mem[i];  // 就地覆写：输出在 R 区同偏移
+            wout = u_axi_ram_imap.mem[i];  // 就地覆写：输出在 R 区同偏移
             $fwrite(fo, "%0d %0d %0d %0d\n",
-                $signed(w0[15:0]),  $signed(w0[31:16]),
-                $signed(w0[47:32]), $signed(w0[63:48]));
+                $signed(wout[15:0]),  $signed(wout[31:16]),
+                $signed(wout[47:32]), $signed(wout[63:48]));
         end
         $fclose(fo);
         $display("TB_FFT_SYS done: done_cnt=%0d cycles=%0d", done_cnt, i);
@@ -726,5 +727,20 @@ module tb_fft_sys;
             if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_data[0][4] !== 32'h0) f4 <= f4 + 1;
     end
     final $display("HI32 总线rdata高32非零=%0d 低32非零=%0d | bus_i_data lane0非零=%0d lane4非零=%0d", rhi, rlo, f0, f4);
+
+
+    // 输出链 X 追踪
+    integer xw, xr, xs3;
+    initial begin xw=0; xr=0; xs3=0; end
+    always @(posedge clk) begin
+        if (dut.u_ai_acce_core.u_fft_core.bus_o_vaild[0]) begin
+            xr <= xr + 1;
+            if ($isunknown(dut.u_ai_acce_core.u_fft_core.bus_o_data[0])) xw <= xw + 1;
+        end
+        if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.array_sort_vaild
+            && dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage == 0)
+            if ($isunknown(dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[0])) xs3 <= xs3 + 1;
+    end
+    final $display("XOUT bus_o采样=%0d 含X=%0d | 趟3 array_sort输入含X=%0d", xr, xw, xs3);
 
 endmodule

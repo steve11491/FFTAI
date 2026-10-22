@@ -352,24 +352,12 @@ module fft_control #(
     //FLAG
     assign ramin2pe_ena = fft_start & (!ram_in_empty) & (!ramin2pe_done);
     assign ramin2pe_end = (ramin2pe_cnt == ramcnt_total[MAX_STAGE-1:PARALLEL_WIDTH]) & fft_start;
-    //FIX(P2R.3): 趟边界读放行延迟——回写结束脉冲后延迟 PASS_GAP_DLY 拍再放行下一趟读,
-    // 恢复 valid 链气泡使换相器 switch_cnt 在趟间复位(对齐旧版内置PE架构的自然行为),
-    // 消除"读超前写+ALU重填期假有效零"导致的换相相位错锁
-    localparam PASS_GAP_DLY = 10;
-    reg [PASS_GAP_DLY-1:0] pe_end_dly;
-    always @(posedge clk) begin
-        if (!rstn) begin
-            pe_end_dly <= 'b0;
-        end else begin
-            pe_end_dly <= {pe_end_dly[PASS_GAP_DLY-2:0], pe2ramin_end | pe2ramout_end};
-        end
-    end
     always @(posedge clk) begin
         if (!rstn) begin
             ramin2pe_done <= 1'b0;
         end else if (ramin2pe_end) begin
             ramin2pe_done <= 1'b1;
-        end else if (pe_end_dly[PASS_GAP_DLY-1]) begin
+        end else if (pe2ramin_end | pe2ramout_end) begin
             ramin2pe_done <= 1'b0;
         end
     end
