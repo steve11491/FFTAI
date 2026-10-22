@@ -579,4 +579,17 @@ module tb_fft_sys;
             $fclose(fbd); fbd = -1;
         end
     end
+    // valid 链气泡追踪: 读使能/读有效/mdc使能
+    integer fvc; initial fvc = 0;
+    always @(posedge clk) begin
+        if ($time > 4200 && $time < 4900) begin
+            if (fvc == 0) fvc = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/validchain.txt", "w");
+            $fwrite(fvc, "%0d %b %b %b %b %b %b %b\n", $time,
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_rd_ena[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_rd_ena[1], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_rd_ena[2],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_vaild[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_vaild[1], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_vaild[2],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.mdc_ena);
+        end else if (fvc != 0 && $time >= 4900) begin
+            $fclose(fvc); fvc = -1;
+        end
+    end
 endmodule
