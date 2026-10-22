@@ -13,8 +13,8 @@
 module tb_fft_sys;
 
     localparam PERIOD = 10;
-    localparam NPOINT = 4096;
-    localparam STAGE = 12;
+    localparam NPOINT = 512;
+    localparam STAGE = 9;
     localparam SIGN_LEN = 1;
     localparam R_BASE = 32'h3C00_0000;
     localparam W_BASE = 32'h3C80_0000;
@@ -379,6 +379,29 @@ module tb_fft_sys;
         if (dut.u_ai_acce_core.FFTO_DMA[0].u_dma_ffto.ffto_done_pulse)
             done_cnt <= done_cnt + 1;
 
+    // 趟调度时间线探针
+    reg [3:0] left_stage_d;
+    integer ev_a2r, ev_p2ri, ev_p2ro;
+    initial begin ev_a2r=0; ev_p2ri=0; ev_p2ro=0; left_stage_d=0; end
+    always @(posedge clk) begin
+        if (dut.u_ai_acce_core.u_fft_core.fft_control_inst.axi2ramin_end) ev_a2r <= ev_a2r + 1;
+        if (dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ramin_end)  begin
+            ev_p2ri <= ev_p2ri + 1;
+            $display("[T=%0t] pe2ramin_end #%0d left_stage=%0d", $time, ev_p2ri+1,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage);
+        end
+        if (dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ramout_end) begin
+            ev_p2ro <= ev_p2ro + 1;
+            $display("[T=%0t] pe2ramout_end #%0d left_stage=%0d out_stage=%b", $time, ev_p2ro+1,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.fft_core_out_stage);
+        end
+        left_stage_d <= dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage;
+        if (left_stage_d != dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage)
+            $display("[T=%0t] left_stage %0d -> %0d", $time, left_stage_d,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.mdc_left_stage);
+    end
+
     // AXI 读事务计数
     always @(posedge clk) begin
         if (imap_m_axi_arvalid && imap_m_axi_arready) begin
@@ -387,5 +410,22 @@ module tb_fft_sys;
         end
         if (imap_m_axi_rvalid && imap_m_axi_rready) rvalid_cnt <= rvalid_cnt + 1;
     end
+
+    // 末趟(pass3)数据流捕获: X1/X2/W 进 ALU 的实际值
+    integer p3f; reg p3_open; integer p3n;
+    initial begin p3_open = 0; p3n = 0; end
+    always @(posedge clk) begin
+        if (ev_p2ri == 2) p3_open <= 1;
+        if (p3_open && p3n < 256 && dut.u_ai_acce_core.u_fft_core.fft_in_valid[0][0]) begin
+            if (p3n == 0) p3f = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/pass3_stream.txt", "w");
+            $fwrite(p3f, "%0d %0d %0d %0d %0d %0d\n",
+                dut.u_ai_acce_core.u_fft_core.X1r[0][0], dut.u_ai_acce_core.u_fft_core.X1i[0][0],
+                dut.u_ai_acce_core.u_fft_core.X2r[0][0], dut.u_ai_acce_core.u_fft_core.X2i[0][0],
+                dut.u_ai_acce_core.u_fft_core.Wr[0][0],  dut.u_ai_acce_core.u_fft_core.Wi[0][0]);
+            p3n <= p3n + 1;
+            if (p3n == 255) $fclose(p3f);
+        end
+    end
+
 
 endmodule
