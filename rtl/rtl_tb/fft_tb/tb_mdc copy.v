@@ -93,10 +93,10 @@ module tb_mdc();
     integer fd_x1;    
     task task_meminit;
     begin
-        $readmemb("E:/v/fft/m/fft_i_16.txt",data_in);
-        $readmemb("E:/v/fft/m/rotar_16.txt",rotar_in);
-        fd_x0 = $fopen("E:/v/fft/m/fft_o_16_real.txt",  "w");
-        fd_x1 = $fopen("E:/v/fft/m/fft_o_16_imag.txt",  "w");
+        $readmemb("D:/project_PLF/FFTAI/software/fft_software/m/fft_i_16.txt",data_in);
+        $readmemb("D:/project_PLF/FFTAI/software/fft_software/m/rotar_16.txt",rotar_in);
+        fd_x0 = $fopen("D:/project_PLF/FFTAI/software/fft_software/m/fft_o_16_real.txt",  "w");
+        fd_x1 = $fopen("D:/project_PLF/FFTAI/software/fft_software/m/fft_o_16_imag.txt",  "w");
         if (! fd_x0) begin
             $display("--- iii --- Failed to open file Z_fir");
         end

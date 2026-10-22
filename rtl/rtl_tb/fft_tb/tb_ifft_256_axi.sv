@@ -105,9 +105,9 @@ module tb_ifft_256_axi();
     integer fd_x1;    
     task task_meminit;
     begin
-        $readmemb("E:/v/fft/m/ifft_i_4096.txt",data_in);
-        fd_x0 = $fopen("E:/v/fft/m/ifft_o_4096_real.txt",  "w");
-        fd_x1 = $fopen("E:/v/fft/m/ifft_o_4096_imag.txt",  "w");
+        $readmemb("D:/project_PLF/FFTAI/software/fft_software/m/ifft_i_4096.txt",data_in);
+        fd_x0 = $fopen("D:/project_PLF/FFTAI/software/fft_software/m/ifft_o_4096_real.txt",  "w");
+        fd_x1 = $fopen("D:/project_PLF/FFTAI/software/fft_software/m/ifft_o_4096_imag.txt",  "w");
         if (! fd_x0) begin
             $display("--- iii --- Failed to open file Z_fir");
         end

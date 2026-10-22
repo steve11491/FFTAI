@@ -107,7 +107,7 @@ module tb_ctrl_256_axi();
     integer fd_x1;    
     task task_meminit;
         begin
-            fd_x0 = $fopen("E:/v/fft/m/fft_o_4096_test.txt",  "w");
+            fd_x0 = $fopen("D:/project_PLF/FFTAI/software/fft_software/m/fft_o_4096_test.txt",  "w");
             for(i=0;i<MAX_POINT;i=i+1)begin
                 data_in[i] = i;
             end
