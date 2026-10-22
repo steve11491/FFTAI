@@ -541,4 +541,26 @@ module tb_fft_sys;
         end
     final $display("ASIN pe_vaild=%0d 输入偶lane非零=%0d 奇lane非零=%0d", asall, asin_e, asin_o);
 
+
+    // array_sort 全流捕获: 写入流/读出流/计数器
+    integer fain, faout, vin_cnt, vout_cnt;
+    initial begin vin_cnt=0; vout_cnt=0; fain=-1; faout=-1; end
+    always @(posedge clk) begin
+        if (done_cnt == 0 && fain == -1 && rstn) begin
+            fain = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/asin.txt", "w");
+            faout = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/asout.txt", "w");
+        end
+        if (fain != -1 && done_cnt < 1) begin
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.pe_o_vaild) begin
+                $fwrite(fain, "%0d %h %h %h %h %h %h %h %h %0d %0d\n", dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_cnt, dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[1], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[2], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[4], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[5], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[6], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_i[7], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.ram_in_num_o, dut.u_ai_acce_core.u_fft_core.fft_control_inst.ram_in_back_num_i_reg);
+                vin_cnt <= vin_cnt + 1;
+            end
+            if (dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.array_sort_vaild) begin
+                $fwrite(faout, "%0d %h %h %h %h %h %h %h %h\n", dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_cnt, dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[1], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[2], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[4], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[5], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[6], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_o[7]);
+                vout_cnt <= vout_cnt + 1;
+            end
+        end
+    end
+    final $display("ASCAP in=%0d out=%0d", vin_cnt, vout_cnt);
+
 endmodule
