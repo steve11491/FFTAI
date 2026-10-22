@@ -630,4 +630,17 @@ module tb_fft_sys;
             $fclose(fwr); fwr = -1;
         end
     end
+    // pass1 全程 pe_o_vaild / array_sort_vaild 逐拍
+    integer fpv; initial fpv = 0;
+    always @(posedge clk) begin
+        if ($time > 3300 && $time < 4400) begin
+            if (fpv == 0) fpv = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/pv_line.txt", "w");
+            $fwrite(fpv, "%0d %b %b %0d\n", $time,
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.pe_o_vaild,
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.array_sort_ram_inst.array_sort_vaild,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ram_cnt);
+        end else if (fpv != 0 && $time >= 4400) begin
+            $fclose(fpv); fpv = -1;
+        end
+    end
 endmodule
