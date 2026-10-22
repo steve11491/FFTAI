@@ -563,4 +563,18 @@ module tb_fft_sys;
     end
     final $display("ASCAP in=%0d out=%0d", vin_cnt, vout_cnt);
 
+    // 趟1->2 边界逐拍记录: 各级开关使能 + 第4级开关两路 + mdc 两路输出
+    integer fbd; initial fbd = 0;
+    always @(posedge clk) begin
+        if ($time > 4000 && $time < 5700) begin
+            if (fbd == 0) fbd = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/boundary.txt", "w");
+            $fwrite(fbd, "%0d %b %b %h %h %h %h %h %h %b\n", $time,
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_ena[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_ena[3],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_0[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_1[3],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[1],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_0[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_1[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.dc_switch_inst[3].dc_switch_fifo_inst.switch_cnt[3]);
+        end else if (fbd != 0 && $time >= 5700) begin
+            $fclose(fbd); fbd = -1;
+        end
+    end
 endmodule
