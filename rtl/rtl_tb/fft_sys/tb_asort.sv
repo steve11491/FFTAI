@@ -56,7 +56,7 @@ module tb_asort;
         #(PERIOD*2);
         fo = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/asort_cmp.txt", "w");
         for (t = 0; t < 30+64+4; t=t+1) begin
-            pe_o_vaild = 1;
+            pe_o_vaild = (t < FILL_LEN + 34);  // 输入在flush结束前30拍停止(系统实测形态)
             for (l = 0; l < 8; l=l+1) din[l] = l*4096 + t;
             if (t < FILL_LEN) begin
                 array_sort_vaild = 0;
