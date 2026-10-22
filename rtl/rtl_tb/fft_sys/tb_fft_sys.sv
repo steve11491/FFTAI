@@ -568,11 +568,13 @@ module tb_fft_sys;
     always @(posedge clk) begin
         if ($time > 4000 && $time < 5700) begin
             if (fbd == 0) fbd = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/boundary.txt", "w");
-            $fwrite(fbd, "%0d %b %b %h %h %h %h %h %h %b\n", $time,
+            $fwrite(fbd, "%0d %b %b %h %h %h %h %h %h %b %h %h %h\n", $time,
                 dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_ena[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_ena[3],
                 dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_0[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_o_1[3],
                 dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_o_real[1],
-                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_0[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_1[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.dc_switch_inst[3].dc_switch_fifo_inst.switch_cnt[3]);
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_0[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.switch_i_1[3], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.dc_switch_inst[3].dc_switch_fifo_inst.switch_cnt[3],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_i_real[0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_i_real[1],
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.mdc_array_inst.R2MDC[0].mdc_inst.data_i_imag[0]);
         end else if (fbd != 0 && $time >= 5700) begin
             $fclose(fbd); fbd = -1;
         end
