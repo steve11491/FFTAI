@@ -606,4 +606,28 @@ module tb_fft_sys;
             end
         end
     endgenerate
+    // pe2ram_cnt / flush 相位时间线
+    integer fcnt; initial fcnt = 0;
+    always @(posedge clk) begin
+        if ($time > 3600 && $time < 4400 && dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ramin_ena) begin
+            if (fcnt == 0) fcnt = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/cntline.txt", "w");
+            $fwrite(fcnt, "%0d %0d %b %b %b\n", $time, dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ram_cnt,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.pebuff2ramin_vaild, dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ramin_ena,
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.pe2ramin_addr[0]);
+        end else if (fcnt != 0 && $time >= 4400) begin
+            $fclose(fcnt); fcnt = -1;
+        end
+    end
+    // 趟1 flush: bank2 lane0 写使能+写数据+地址 逐拍
+    integer fwr; initial fwr = 0;
+    always @(posedge clk) begin
+        if ($time > 3700 && $time < 4350) begin
+            if (fwr == 0) fwr = $fopen("D:/project_PLF/FFTAI/sim/fft_sys/wr_line.txt", "w");
+            $fwrite(fwr, "%0d %b %h %0d\n", $time,
+                dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_ena[2][0], dut.u_ai_acce_core.u_fft_core.FFT_ARRAY[0].u_fft_array.ffti_wr_data[2][0],
+                dut.u_ai_acce_core.u_fft_core.fft_control_inst.ram_in_back_addr_i_reg[0]);
+        end else if (fwr != 0 && $time >= 4350) begin
+            $fclose(fwr); fwr = -1;
+        end
+    end
 endmodule
