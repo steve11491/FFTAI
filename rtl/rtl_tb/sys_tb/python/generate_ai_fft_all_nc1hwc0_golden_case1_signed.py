@@ -2213,7 +2213,7 @@ def test_rearrange_total_imap():
 
 
 np.random.seed(0)
-path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ai_fft_all_nc1hwc0_case1_signed", "")
+path = "D:\\code\\test\\verilog\\ai_engine\\ai_engine\\rtl\\tb\\sys\\python\\ai_fft_all_nc1hwc0_case1_signed\\"
 
 # bus_width = 64
 # in_channels = 32

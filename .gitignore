@@ -32,5 +32,3 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
-note/p2_scripts/oracle/
-sim/

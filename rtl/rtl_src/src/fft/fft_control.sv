@@ -394,13 +394,7 @@ module fft_control #(
     end
 
     //FLAG
-    localparam WB_DLY = 24;
-    reg [WB_DLY-1:0] fcv_dly;
-    always @(posedge clk) begin
-        if (!rstn) fcv_dly <= 'b0;
-        else fcv_dly <= {fcv_dly[WB_DLY-2:0], (|fft_core_vaild) & fft_start};
-    end
-    assign pe2ramin_ena = fcv_dly[WB_DLY-1] & (mdc_stage_reg == 0);
+    assign pe2ramin_ena = fft_start & (|fft_core_vaild) & (mdc_stage_reg == 0);
     assign pe2ramin_end = (pe2ram_cnt==ramcnt_total[MAX_STAGE-1:PARALLEL_WIDTH])&pebuff2ramin_vaild;
 
 

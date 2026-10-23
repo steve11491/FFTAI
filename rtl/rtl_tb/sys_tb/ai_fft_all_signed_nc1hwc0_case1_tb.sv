@@ -1747,8 +1747,8 @@ module ai_fft_all_signed_nc1hwc0_case1_tb;
     logic [BUS_WIDTH-1:0] imap_int16_initial_data;
 
 
-    `define SRC_PATH "D:\\project_PLF\\FFTAI\\rtl\\rtl_tb\\sys_tb\\python\\ai_fft_all_nc1hwc0_case1_signed"
-    `define OUT_DATA_PATH "D:\\project_PLF\\FFTAI\\rtl\\rtl_tb\\sys_tb\\python\\ai_fft_all_nc1hwc0_case1_signed\\pe_data"
+    `define SRC_PATH "D:\\code\\test\\verilog\\ai_engine\\ai_engine\\rtl\\tb\\sys\\python\\ai_fft_all_nc1hwc0_case1_signed"
+    `define OUT_DATA_PATH "D:\\code\\test\\verilog\\ai_engine\\ai_engine\\rtl\\tb\\sys\\python\\ai_fft_all_nc1hwc0_case1_signed\\pe_data"
 
     integer i, j;
     integer fid;
