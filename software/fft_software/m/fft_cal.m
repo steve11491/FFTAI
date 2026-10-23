@@ -412,13 +412,13 @@ yr(2,:)=imag(ym);
 dyr=yr(1,:)-fft_o(1,:);
 dyi=yr(2,:)-fft_o(2,:);
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fft_o(1,:)),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fft_o(2,:)),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fft_o(1,:)),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fft_o(2,:)),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 if debug==0
     fft_s1_i = reshape(pe_s1_i(1,:,:,1)*2^15,p,N/p);
@@ -476,9 +476,9 @@ for i=1:N
     else
         fft_i_note(1,i*2-1) = round(x_o(1,i)*2^15);
     end
-    x_bin = dec2bin(fft_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(fft_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
-    x_bin = dec2bin(fft_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(fft_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
 
 end
@@ -502,9 +502,9 @@ for i=1:N
     else
         fft_i_note(1,i*2) = round(fft_o(2,i)*2^5);
     end
-    x_bin = dec2bin(fft_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(fft_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
-    x_bin = dec2bin(fft_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(fft_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
 
 end
@@ -539,9 +539,9 @@ for i=1:4
         xso = round(so(i)*2^15);
     end
 
-    c_bin = dec2bin(xco,16); %imag
+    c_bin = dec2bin(mod(xco,65536),16); %imag
 
-    s_bin = dec2bin(xso,16); %real
+    s_bin = dec2bin(mod(xso,65536),16); %real
 end
 
 
@@ -576,10 +576,10 @@ for i=1:N/8
         rotar_i_note(1,i*2) = round(cordic_rom(2,floor((i-1)/(N/p))+1,mod(i-1,N/p)+1)*2^15);
     end
 
-    x_bin = dec2bin(rotar_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
 
-    x_bin = dec2bin(rotar_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
     
 end
@@ -603,10 +603,10 @@ for i=N/8+1:N/4
         rotar_i_note(1,i*2) = round(cordic_rom(2,floor((i-1)/(N/p))+1,mod(i-1,N/p)+1)*2^15);
     end
 
-    x_bin = dec2bin(rotar_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
 
-    x_bin = dec2bin(rotar_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
     
 end
@@ -630,10 +630,10 @@ for i=N/4+1:3*N/8
         rotar_i_note(1,i*2) = round(cordic_rom(2,floor((i-1)/(N/p))+1,mod(i-1,N/p)+1)*2^15);
     end
 
-    x_bin = dec2bin(rotar_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
 
-    x_bin = dec2bin(rotar_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
     
 end
@@ -657,10 +657,10 @@ for i=3*N/8+1:N/2
         rotar_i_note(1,i*2) = round(cordic_rom(2,floor((i-1)/(N/p))+1,mod(i-1,N/p)+1)*2^15);
     end
 
-    x_bin = dec2bin(rotar_i_note(1,i*2),16); %imag
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2),65536),16); %imag
     fprintf(fid,'%s',x_bin);
 
-    x_bin = dec2bin(rotar_i_note(1,i*2-1),16); %real
+    x_bin = dec2bin(mod(rotar_i_note(1,i*2-1),65536),16); %real
     fprintf(fid,'%s\n',x_bin);
     
 end
@@ -681,13 +681,13 @@ fpga_imag = fft_o_note_imag/2^(15-Ns);
 dyr=yr(1,:)-fpga_real;
 dyi=yr(2,:)-fpga_imag;
 figure('Position',[470,200,760,637])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 %比较结果
 fft_o_note_real = load("fft_o_4096_real_1.txt");
@@ -701,13 +701,13 @@ fpga_imag = fft_o_note_imag/2^(15-Ns);
 dyr=yr(1,:)-fpga_real;
 dyi=yr(2,:)-fpga_imag;
 % figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 
 %比较结果
@@ -722,13 +722,13 @@ fpga_imag = fft_o_note_imag/2^(15-Ns);
 dyr=yr(1,:)-fpga_real;
 dyi=yr(2,:)-fpga_imag;
 % figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 %比较结果
 fft_o_note_real = load("fft_o_4096_real_3.txt");
@@ -742,13 +742,13 @@ fpga_imag = fft_o_note_imag/2^(15-Ns);
 dyr=yr(1,:)-fpga_real;
 dyi=yr(2,:)-fpga_imag;
 % figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 rpmr = 20*log10(rms(dyr));
 rpmi = 20*log10(rms(dyi));
@@ -767,13 +767,13 @@ fpga_imag = fft_o_note_imag/2^(15-Ns);
 dyr=yr(1,:)-fpga_real;
 dyi=yr(2,:)-fpga_imag;
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('RTL仿真结果实部')
-nexttile,plot(yr(1,:)),title('MATLAB仿真结果实部')
-nexttile,plot(dyr),title('实部结果误差')
-nexttile,plot(fpga_imag),title('RTL仿真结果虚部')
-nexttile,plot(yr(2,:)),title('MATLAB仿真结果虚部')
-nexttile,plot(dyi),title('虚部结果误差')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('RTL仿真结果实部')
+%nexttile,plot(yr(1,:)),title('MATLAB仿真结果实部')
+%nexttile,plot(dyr),title('实部结果误差')
+%nexttile,plot(fpga_imag),title('RTL仿真结果虚部')
+%nexttile,plot(yr(2,:)),title('MATLAB仿真结果虚部')
+%nexttile,plot(dyi),title('虚部结果误差')
 
 rpmr = 20*log10(rms(dyr));
 rpmi = 20*log10(rms(dyi));
@@ -787,7 +787,7 @@ fft_o_note_file = load("fft_o_4096_test.txt");
 %结果对比
 dyr=fft_o(1,1:length(fft_o_note_file))-fft_o_note_file-1;
 figure('Position',[470,372,969,465])
-nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(dyr),title('XrealDeta')
 
 
 %% 
@@ -841,13 +841,13 @@ end
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr(1,1:N)),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi(1,1:N)),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr(1,1:N)),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi(1,1:N)),title('XimgeDeta')
 
 rpmr = 20*log10(rms(dyr(1,1:N)));
 rpmi = 20*log10(rms(dyi(1,1:N)));
@@ -873,13 +873,13 @@ end
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 rpmr = 20*log10(rms(dyr));
 rpmi = 20*log10(rms(dyi));
@@ -902,13 +902,13 @@ end
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 %加载结果数据
 
@@ -924,13 +924,13 @@ end
 %结果对比
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 
 %加载结果数据
@@ -947,13 +947,13 @@ end
 %结果对比
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 
 %加载结果数据
@@ -970,13 +970,13 @@ end
 %结果对比
 dyr=yr(1,:)-fpga_result_real;
 dyi=yr(2,:)-fpga_result_imag;
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_result_real),title('Xreal')
-nexttile,plot(yr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_result_imag),title('Ximge')
-nexttile,plot(yr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_result_real),title('Xreal')
+%nexttile,plot(yr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_result_imag),title('Ximge')
+%nexttile,plot(yr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 
 
@@ -1033,13 +1033,13 @@ xr(2,:)=imag(xm);
 dyr=xr(1,:)-fpga_real;
 dyi=xr(2,:)-fpga_imag;
 figure('Position',[470,372,969,465])
-% nexttile,plot(x_o),title('x')
-nexttile,plot(fpga_real),title('Xreal')
-nexttile,plot(xr(1,:)),title('XrealMat')
-nexttile,plot(dyr),title('XrealDeta')
-nexttile,plot(fpga_imag),title('Ximge')
-nexttile,plot(xr(2,:)),title('XimgeMat')
-nexttile,plot(dyi),title('XimgeDeta')
+%% nexttile,plot(x_o),title('x')
+%nexttile,plot(fpga_real),title('Xreal')
+%nexttile,plot(xr(1,:)),title('XrealMat')
+%nexttile,plot(dyr),title('XrealDeta')
+%nexttile,plot(fpga_imag),title('Ximge')
+%nexttile,plot(xr(2,:)),title('XimgeMat')
+%nexttile,plot(dyi),title('XimgeDeta')
 
 rpmr = 20*log10(rms(dyr));
 rpmi = 20*log10(rms(dyi));
