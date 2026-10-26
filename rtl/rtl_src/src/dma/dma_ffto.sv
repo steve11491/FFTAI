@@ -76,6 +76,7 @@ always @(posedge clk)begin
 end
 
 
+(* mark_debug = "true"*)wire [DATA_FIFO_COUNT_WIDTH-1:0]ffto_data_fifo_counter;
 assign ffto_wready = (ffto_data_fifo_counter < (FIFO_DEPTH - RAMOUT_DELAY)); //ffto_data_fifo full
 
 //===================FIFO======================//
@@ -86,7 +87,6 @@ assign ffto_wready = (ffto_data_fifo_counter < (FIFO_DEPTH - RAMOUT_DELAY)); //f
 (* mark_debug = "true"*)wire ffto_data_fifo_rd_valid;
 (* mark_debug = "true"*)wire ffto_data_fifo_empty;
 (* mark_debug = "true"*)wire ffto_data_fifo_full;
-(* mark_debug = "true"*)wire [DATA_FIFO_COUNT_WIDTH-1:0]ffto_data_fifo_counter;
 sync_fifo_cnt #(
     .WIDTH(BUS_WIDTH),
     .DEPTH(FIFO_DEPTH),
