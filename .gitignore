@@ -33,3 +33,5 @@ __pycache__/
 Thumbs.db
 desktop.ini
 sim/
+vivado/synth_rtl/
+vivado/project_fft/
