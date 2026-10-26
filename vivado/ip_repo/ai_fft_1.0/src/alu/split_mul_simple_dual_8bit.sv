@@ -84,7 +84,7 @@ module mul_DSP48_simple_dual_8bit (
             c_r <= c_in;
         end
     end
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             in_valid_w <= 0;
         end else begin
@@ -104,7 +104,7 @@ module mul_DSP48_simple_dual_8bit (
         end
 
     end
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             out_valid <= 0;
         end else begin

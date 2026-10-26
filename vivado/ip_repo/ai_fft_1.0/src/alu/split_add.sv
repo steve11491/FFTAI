@@ -44,7 +44,7 @@ module split_add #(
     reg signed [LS_WIDTH-1+1:0] ls_adder_w;
     reg signed [LS_WIDTH-1+1:0] ls_adder_reg;
     assign ls_adder_w = ls_adder1 + ls_adder2;
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             ls_adder_reg <= 0;
         end else if (in_valid) begin
@@ -65,7 +65,7 @@ module split_add #(
     assign ms_data_b_w = in2[WIDTH-1:WIDTH-MS_WIDTH];
     assign ms_data_a   = bypass ? ms_data_a_w : ms_data_a_reg;
     assign ms_data_b   = bypass ? ms_data_b_w : ms_data_b_reg;
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             ms_data_a_reg <= 0;
             ms_data_b_reg <= 0;

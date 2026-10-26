@@ -38,7 +38,7 @@ module split_add_equal_width #(
     assign ls_adder2 = {sign_bit_b, in2[LS_WIDTH-1:0]};
     reg signed [LS_WIDTH-1+1:0] ls_adder;
     wire cross_carry = is_int16 ? ls_adder[LS_WIDTH] : 1'b0;
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             ls_adder <= 0;
         end else if (in_valid) begin
@@ -49,7 +49,7 @@ module split_add_equal_width #(
     // the more significant data needs to wait in1 tick for the carry
     // signal to be ready
     reg [MS_WIDTH-1:0] ms_data_a, ms_data_b;
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             ms_data_a <= 0;
             ms_data_b <= 0;

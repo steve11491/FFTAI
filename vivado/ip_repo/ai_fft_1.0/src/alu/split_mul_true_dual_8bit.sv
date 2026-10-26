@@ -47,7 +47,7 @@
 //         end
 //     end
 
-//     always @(posedge clk or posedge rstn) begin
+//     always @(posedge clk or negedge rstn) begin
 //         if (~rstn) begin
 //             out_valid <= 0;
 //         end else begin
@@ -163,7 +163,7 @@ module split_mul_true_dual_8bit (
         end
     end
 
-    always @(posedge clk or posedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (~rstn) begin
             out_valid <= 0;
         end else begin
