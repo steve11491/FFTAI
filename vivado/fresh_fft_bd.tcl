@@ -94,8 +94,8 @@ make_wrapper -files [get_files fft_sys.bd] -top
 add_files -norecurse fft_proj.srcs/sources_1/bd/fft_sys/hdl/fft_sys_wrapper.v
 set_property top fft_sys_wrapper [current_fileset]
 
-# 5. 约束
-add_files -fileset constrs_1 constraints/fpga.xdc
+# 5. 约束: PS7 FCLK_CLK0 自动派生 100MHz 时钟约束, BD 流程无需外部 xdc
+#    (旧 constraints/fpga.xdc 为 YOLO 工程 design_1 层级路径, 已随旧约束目录删除)
 
 # 6. 综合 → bitstream
 puts "\n===== 综合 ====="

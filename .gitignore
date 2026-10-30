@@ -14,14 +14,6 @@ vivado/fft_system/ip_upgrade.log/
 vivado/fft_system/fft_system.srcs/sources_1/bd/fft_sys/ip/
 vivado/fft_system/fft_system.srcs/sources_1/bd/fft_sys/ui/
 vivado/fft_system/fft_system.srcs/sources_1/bd/fft_sys/*.bda
-vivado/fft_proj/fft_proj.cache/
-vivado/fft_proj/fft_proj.hw/
-vivado/fft_proj/fft_proj.ip_user_files/
-vivado/fft_proj/fft_proj.runs/
-vivado/fft_proj/fft_proj.sim/
-vivado/fft_proj/fft_proj.srcs/sources_1/bd/fft_sys/ip/
-vivado/fft_proj/fft_proj.srcs/sources_1/bd/fft_sys/ui/
-vivado/fft_proj/fft_proj.srcs/sources_1/bd/fft_sys/*.bda
 
 # ---- 仿真垃圾 ----
 *.wdb
@@ -48,4 +40,3 @@ __pycache__/
 Thumbs.db
 desktop.ini
 sim/
-vivado/synth_rtl/
